@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Community Chat App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+
+    </head>
+
+<style>
+    select{
+
+        width: 200px;
+    }
+    .sticky-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        padding: 10px;
+    }
+
+    .icon-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    #chat2 .form-control {
+        border-color: transparent;
+    }
+
+    #chat2 .form-control:focus {
+        border-color: transparent;
+        box-shadow: inset 0px 0px 0px 1px transparent;
+    }
+
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .name {
+        margin-left: 10px;
+    }
+</style>
+
+<body style="background-color: #eee;">
+    <div class="container ">
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-6">
+
+                <div class="card" id="chat2">
+                    <div class="card-header d-flex justify-content-between align-items-center p-3">
+                        {% comment %} <button type="button" class="btn btn-primary btn-sm"
+                            data-mdb-ripple-color="dark">Groups</button> {% endcomment %}
+                    <button type="button" class="btn btn-primary btn-sm"
+                            data-mdb-ripple-color="dark"><a class="text-white text-decoration-none" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Member</a></button> 
+                    </div>
+
+                    <div class="card m-2">
+                        <div class="d-flex flex-row justify-content-start">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                                alt="avatar 1" style="width: 45px; height: 100%;">
+                            <div class="name">
+                                <p>
+                                    <a class="text-decoration-none " href="">{{group.name}} <br> <span class="text-muted">{{group.participants.count}} Members</span> </a>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; ">
+
+                        <div class="sticky-footer">
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content p-3">
+        <form action="" method="POST" >
+            {% csrf_token %}
+             <h5 class="text-center">Choose Members</h5>
+             <hr>
+             <div class="container mt-5">
+                
+         
+                {{form}}
+              </div>             
+              <div class="d-flex p-3 justify-content-center">
+                 <button type="submit" class="btn btn-success">SUMBIT</button>
+             </div>
+             
+         </form>
+      </div>
+    </div>
+  </div>
+
+
+
+        <script>
+            function SwitchInput() {
+                var picha = document.getElementById("picha");
+                var mess = document.getElementById("mess");
+
+                if (picha.classList.contains("d-none")) {
+                    picha.classList.remove("d-none");
+                    mess.classList.add("d-none");
+                } else {
+                    picha.classList.add("d-none");
+                    mess.classList.remove("d-none");
+                }
+            }
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+</body>
+
+</html>

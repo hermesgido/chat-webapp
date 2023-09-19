@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Community Chat App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<style>
+    .sticky-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        padding: 10px;
+    }
+
+    .icon-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    #chat2 .form-control {
+        border-color: transparent;
+    }
+
+    #chat2 .form-control:focus {
+        border-color: transparent;
+        box-shadow: inset 0px 0px 0px 1px transparent;
+    }
+
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .name {
+        margin-left: 10px;
+    }
+</style>
+
+<body style="background-color: #eee;">
+    <div class="container ">
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-6">
+                {% include 'messages.html' %}
+                <div class="card" id="chat2">
+                    <div class="card-header d-flex justify-content-between align-items-center p-3">
+                        <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">My Groups</button>
+                        {% comment %} <button type="button" class="btn btn-primary btn-sm"
+                            data-mdb-ripple-color="dark">Groups</button> {% endcomment %}
+
+                          
+                    <button type="button" class="btn btn-primary btn-sm"
+                            data-mdb-ripple-color="dark"><a class="text-white text-decoration-none" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Group</a></button> 
+                    </div>
+
+                    
+                    {% for group in  user_groups %}
+                    <div class="card m-2">
+                        <div class="d-flex flex-row justify-content-start">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                                alt="avatar 1" style="width: 45px; height: 100%;">
+                            <div class="name">
+                                <p>
+                                    <a class="text-decoration-none " href="{% url 'add_group_member' group.id %}">{{group.name}} <br> <span class="text-muted">{{ group.participants.count }} Members</span> </a>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    
+                    {% if request.user.is_superuser %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"">ADD PRODUCT</button>
+                    {% endif %}
+
+
+                    <br>
+                    <h3 class="text-center">Orders</h3>
+                    <br>
+{% for oda in orders  %}
+    <div class="card p-3 m-1">
+        <p>Product: <strong>{{oda.product.name}} </strong>  <br>
+        Price: <strong>{{oda.product.price}} Tsh</strong> <br>Phone Number: <strong> {{ oda.phone_number }} </strong></p>
+    </div>
+{% endfor %}
+    
+
+<br>
+<h3 class="text-center">Products</h3>
+<br>
+{% for product in products %}
+<div class="card product-item p-2 m-1">
+    <img src="{{ product.image.url }}" alt="" width="50" height="60" srcset="">
+    <p>Name: <strong>{{ product.name }}</strong><br> Price: <strong>{{ product.price }} Tsh</strong></p>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#productModal{{ product.id }}">BUY</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            {% comment %} <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">{{ product.name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> {% endcomment %}
+            <div class="text-center p=3">
+               <h3> Are you sure you want to pay for this product </h3>
+            </div>
+            <div class="modal-body">
+                <p>Name: <strong>{{ product.name }}</strong></p>
+                <p>Price: <strong>{{ product.price }} Tsh</strong></p>
+
+                <form action="{% url 'buy_product' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" name="phone_number">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                <!-- Add other product details here -->
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary m-2" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name="buy" class="btn btn-primary m-2">Buy Now</button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+    
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ product_form }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="productfm" class="btn btn-primary">Save </button>
+        </div>
+      </div>
+
+      </form>
+    </div>
+  </div>
+
+
+   <!-- Modal -->
+   <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ product_form }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="productfm" class="btn btn-primary">Save </button>
+        </div>
+      </div>
+
+      </form>
+    </div>
+  </div>
+                        
+                        
+                    
+                    
+                    
+                    <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; ">
+
+                        <div class="sticky-footer">
+
+<div class="logout text-center">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content p-3">
+                <form action="" method="POST" >
+                    {% csrf_token %}
+                     <h5 class="text-center">Create Group</h5>
+                     <hr>
+                     <label for="Group Name">Group Name</label>
+                     <input type="text" name="group_name" class="form-control">
+                     <div class="d-flex p-3 justify-content-center">
+                         <button type="submit" class="btn btn-success">SUMBIT</button>
+                     </div>
+                     
+                 </form>
+              </div>
+            </div>
+          </div>
+
+        <script>
+            function SwitchInput() {
+                var picha = document.getElementById("picha");
+                var mess = document.getElementById("mess");
+
+                if (picha.classList.contains("d-none")) {
+                    picha.classList.remove("d-none");
+                    mess.classList.add("d-none");
+                } else {
+                    picha.classList.add("d-none");
+                    mess.classList.remove("d-none");
+                }
+            }
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+</body>
+
+</html>

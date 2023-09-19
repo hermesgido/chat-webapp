@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:chat_app}/db.sqlite3",
+            "name": "chatapp"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
